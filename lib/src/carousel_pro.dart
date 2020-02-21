@@ -91,6 +91,9 @@ class Carousel extends StatefulWidget {
   //On image tap event, passes current image index as an argument
   final void Function(int) onImageTap;
 
+  //On image tap event, excute this function
+  final void Function() onImageTapInkWell;
+
   //On image change event, passes previous image index and current image index as arguments
   final void Function(int, int) onImageChange;
 
@@ -121,7 +124,7 @@ class Carousel extends StatefulWidget {
     this.autoplayDuration = const Duration(seconds: 3),
     this.onImageTap,
     this.onImageChange,
-    this.defaultImage,
+    this.defaultImage, this.onImageTapInkWell,
   });
 
   @override
@@ -308,39 +311,41 @@ class CarouselState extends State<Carousel> {
 
     return Column(
       children: <Widget>[
-        Container(
-          child: Builder(
-            builder: (_) {
-              Widget pageView = PageView(
-                physics: AlwaysScrollableScrollPhysics(),
-                controller: _controller,
-                children: listImages,
-                onPageChanged: (currentPage) {
-                  if (widget.onImageChange != null) {
-                    widget.onImageChange(_currentImageIndex, currentPage);
-                  }
+        Expanded(
+          child: Container(
+            child: Builder(
+              builder: (_) {
+                Widget pageView = PageView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  controller: _controller,
+                  children: listImages,
+                  onPageChanged: (currentPage) {
+                    if (widget.onImageChange != null) {
+                      widget.onImageChange(_currentImageIndex, currentPage);
+                    }
 
-                  _currentImageIndex = currentPage;
-                },
-              );
+                    _currentImageIndex = currentPage;
+                  },
+                );
 
-              if (widget.onImageTap == null) {
-                return pageView;
-              }
+                if (widget.onImageTap == null) {
+                  return pageView;
+                }
 
-              return GestureDetector(
-                child: pageView,
-                onTap: () => widget.onImageTap(_currentImageIndex),
-              );
-            },
+                return InkWell(
+                  child: pageView,
+                  borderRadius: BorderRadius.all(widget.radius),
+                  onTap: () => widget.onImageTap(_currentImageIndex),
+                );
+              },
+            ),
           ),
         ),
         widget.showIndicator
             ? Container(
+                margin: EdgeInsets.only(top: 10),
                 decoration: BoxDecoration(
-                  color: widget.dotBgColor == null
-                      ? Colors.grey[800].withOpacity(0.5)
-                      : widget.dotBgColor,
+                  color: widget.dotBgColor == null ? null : widget.dotBgColor,
                   borderRadius: widget.borderRadius
                       ? (widget.noRadiusForIndicator
                           ? null
@@ -350,7 +355,8 @@ class CarouselState extends State<Carousel> {
                                   : Radius.circular(8.0),
                               bottomRight: widget.radius != null
                                   ? widget.radius
-                                  : Radius.circular(8.0)))
+                                  : Radius.circular(8.0),
+                            ))
                       : null,
                 ),
                 padding: EdgeInsets.all(widget.indicatorBgPadding),
@@ -427,13 +433,18 @@ class DotsIndicator extends AnimatedWidget {
     final dotColor = zoom > 1.0 ? increasedColor : color;
     return Container(
       width: dotSpacing,
+      margin: EdgeInsets.only(right: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: increasedColor),
+        borderRadius: new BorderRadius.circular(30.0),
+      ),
       child: Center(
         child: Material(
           color: dotColor,
           type: MaterialType.circle,
           child: Container(
-            width: dotSize * zoom,
-            height: dotSize * zoom,
+            width: dotSize,
+            height: dotSize,
             child: InkWell(
               onTap: () => onPageSelected(index),
             ),
