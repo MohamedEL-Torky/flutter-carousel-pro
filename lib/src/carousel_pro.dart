@@ -306,7 +306,7 @@ class CarouselState extends State<Carousel> {
       left = right = 0.0;
     }
 
-    return Stack(
+    return Column(
       children: <Widget>[
         Container(
           child: Builder(
@@ -336,46 +336,40 @@ class CarouselState extends State<Carousel> {
           ),
         ),
         widget.showIndicator
-            ? Positioned(
-                bottom: bottom,
-                top: top,
-                left: left,
-                right: right,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: widget.dotBgColor == null
-                        ? Colors.grey[800].withOpacity(0.5)
-                        : widget.dotBgColor,
-                    borderRadius: widget.borderRadius
-                        ? (widget.noRadiusForIndicator
-                            ? null
-                            : BorderRadius.only(
-                                bottomLeft: widget.radius != null
-                                    ? widget.radius
-                                    : Radius.circular(8.0),
-                                bottomRight: widget.radius != null
-                                    ? widget.radius
-                                    : Radius.circular(8.0)))
-                        : null,
-                  ),
-                  padding: EdgeInsets.all(widget.indicatorBgPadding),
-                  child: Center(
-                    child: DotsIndicator(
-                      controller: _controller,
-                      itemCount: listImages.length,
-                      color: widget.dotColor,
-                      increasedColor: widget.dotIncreasedColor,
-                      dotSize: widget.dotSize,
-                      dotSpacing: widget.dotSpacing,
-                      dotIncreaseSize: widget.dotIncreaseSize,
-                      onPageSelected: (int page) {
-                        _controller.animateToPage(
-                          page,
-                          duration: widget.animationDuration,
-                          curve: widget.animationCurve,
-                        );
-                      },
-                    ),
+            ? Container(
+                decoration: BoxDecoration(
+                  color: widget.dotBgColor == null
+                      ? Colors.grey[800].withOpacity(0.5)
+                      : widget.dotBgColor,
+                  borderRadius: widget.borderRadius
+                      ? (widget.noRadiusForIndicator
+                          ? null
+                          : BorderRadius.only(
+                              bottomLeft: widget.radius != null
+                                  ? widget.radius
+                                  : Radius.circular(8.0),
+                              bottomRight: widget.radius != null
+                                  ? widget.radius
+                                  : Radius.circular(8.0)))
+                      : null,
+                ),
+                padding: EdgeInsets.all(widget.indicatorBgPadding),
+                child: Center(
+                  child: DotsIndicator(
+                    controller: _controller,
+                    itemCount: listImages.length,
+                    color: widget.dotColor,
+                    increasedColor: widget.dotIncreasedColor,
+                    dotSize: widget.dotSize,
+                    dotSpacing: widget.dotSpacing,
+                    dotIncreaseSize: widget.dotIncreaseSize,
+                    onPageSelected: (int page) {
+                      _controller.animateToPage(
+                        page,
+                        duration: widget.animationDuration,
+                        curve: widget.animationCurve,
+                      );
+                    },
                   ),
                 ),
               )
